@@ -67,18 +67,30 @@ for course_bundle_link in courses_bundle_link_list:
         driver.get(full_url)
         soup = BeautifulSoup(driver.page_source, 'lxml')
 
-        url = soup.find('a', {'class': 'download'})
+        if (soup.find('a', {'class': 'download'}) is not None):
+            url = soup.find('a', {'class': 'download'})
+        else:
+            continue
+
         folder_name = soup.select('.course-sidebar h2')
         request = requests.get(url['href'], stream=True)
         print(f'Writing the video: {format_file_name(link.text)}')
 
-        if (not os.path.isdir(f'{path}/{folder_name[0].text}')):
-            os.makedirs(f'{path}/{folder_name[0].text}')
+        current_file_path = f"{folder_name[0].text}/{i}) {format_file_name(link.text)}.mp4"
+        current_folder_path = f'{path}/{folder_name[0].text}'
+        i += 1
 
-        with open(f"{folder_name[0].text}/{i}) {format_file_name(link.text)}.mp4", "wb") as f:
+        if (not os.path.isdir(current_folder_path)):
+            os.makedirs(current_folder_path)
+
+        if (os.path.isfile(current_file_path)):
+            if (not os.stat(current_file_path).st_size == 0):
+                continue
+
+        with open(current_file_path, "wb") as f:
             for chunk in request.iter_content(chunk_size=chunk_size):
                 f.write(chunk)
-        i += 1
+
 
 driver.quit()
 exit()
