@@ -11,18 +11,19 @@ import io
 main_url = 'https://codewithmosh.com'
 url = 'https://codewithmosh.com/sign_in'
 courses_bundle_link_list = []
-chunk_size = 256
+chunk_size = 5120
 path = os.getcwd()
 
-
 # Functions
+
 
 def format_file_name(string):
     new_string = " ".join(string.split())
     string = re.sub(r"\(.*?\)", "", new_string)
+    string = string.replace('- ', ' - ')
     for ch in ['Start ', ':', '?', '"', '<', '>', '|',  '\\', '/', '*', '\n', '\'']:
         string = string.replace(ch, '')
-    return string
+    return string.strip()
 
 
 driver = webdriver.Chrome()
