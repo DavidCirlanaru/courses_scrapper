@@ -6,6 +6,7 @@ import time
 import re
 import os
 import io
+import config
 
 # Vars
 main_url = 'https://codewithmosh.com'
@@ -27,7 +28,7 @@ def format_file_name(string):
 
 
 driver = webdriver.Chrome()
-driver.implicitly_wait(10)  # delay
+driver.implicitly_wait(10)
 
 # Navigate to the url
 driver.get(url)
@@ -38,8 +39,8 @@ username_input = driver.find_element_by_id('user_email')
 password_input = driver.find_element_by_id('user_password')
 login_btn = driver.find_element_by_class_name('login-button')
 
-username_input.send_keys('cirlanaru.david77@gmail.com')
-password_input.send_keys('password_for_python')
+username_input.send_keys(config.user_email)
+password_input.send_keys(config.user_password)
 login_btn.click()
 
 time.sleep(2)
@@ -54,7 +55,7 @@ for a in course_bundle_links:
     courses_bundle_link_list.append(course_link)
 
 # Bundle courses page
-for course_bundle_link in courses_bundle_link_list:
+for course_bundle_link in courses_bundle_link_list[3:]:
     print(f'Switching to another course: {course_bundle_link}')
     source = requests.get(course_bundle_link)
     content = source.content
@@ -76,8 +77,8 @@ for course_bundle_link in courses_bundle_link_list:
         request = requests.get(url['href'], stream=True)
         print(f'Writing the video: {format_file_name(link.text)}')
 
-        current_file_path = f"{folder_name[0].text}/{i}) {format_file_name(link.text)}.mp4"
-        current_folder_path = f'{path}/{folder_name[0].text}'
+        current_file_path = f"{format_file_name(folder_name[0].text)}/{i}) {format_file_name(link.text)}.mp4"
+        current_folder_path = f'{path}/{format_file_name(folder_name[0].text)}'
         i += 1
 
         if (not os.path.isdir(current_folder_path)):
